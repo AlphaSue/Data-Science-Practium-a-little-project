@@ -1,7 +1,7 @@
 ---
-title: "Try2_with_RF_Plus_stepAIC"
+title: "Try3_with_RF_Plus_stepAIC__Plus_strat"
 author: "Linxiao Bai"
-date: "2/2/2017"
+date: "2/7/2017"
 output: html_document
 ---
 ###Loading Packages and Data
@@ -13,6 +13,7 @@ library(leaps)
 library(plyr)
 library(e1071)
 library(caret)
+library(splitstackshape)
 #please install all
 #please change this directory
 load('/Users/Pagliacci/Desktop/DSC450/samsungData.rda')
@@ -26,13 +27,11 @@ samsungData$activity=as.factor(samsungData$activity)
 ```{r}
 count(samsungData$activity)
 ```
-###Resampling Data to Train/Test, 7:3
+###Resampling Data with stratifed, with respect to subject. 7:3 train test ratio.
 ```{r}
-#hold-out 7:3
-nr=nrow(samsungData)
-trainidx=sample(1:nr,0.7*nr)
-train=samsungData[trainidx,]
-test=samsungData[-trainidx,]
+set.seed(1)
+test= stratified(samsungData, c("subject"), 0.3)
+train= samsungData[-as.numeric(rownames(test)),]
 ```
 ###Rough Selection with RF, Yield 50 variables, 
 #####This step takes about 1mins
